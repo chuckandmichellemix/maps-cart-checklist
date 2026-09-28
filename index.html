@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAPS Cart Usage — MPS-KS-TEST (Trial)</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<script src="./catalog.js"></script>
+<style>
+:root{
+  --bg:#F5F4F0;--surface:#FFFFFF;--surface2:#F9F8F5;--border:#DEDBD4;--ink:#23211C;--muted:#6E6C66;--faint:#A9A7A1;
+  --accent:#01696F;--accent-ink:#FFFFFF;--accent-soft:#E3EFEF;--warn:#964219;--warn-soft:#F8EDE6;
+  --r:12px;--font:'Satoshi',system-ui,-apple-system,Segoe UI,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#161513;--surface:#1E1D1B;--surface2:#232220;--border:#393836;--ink:#E4E2DE;--muted:#9A9893;--faint:#65635F;
+  --accent:#4F98A3;--accent-ink:#0F1415;--accent-soft:#1C2E30;--warn:#D08A5E;--warn-soft:#2E2119;}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px 140px}
+.trial{background:var(--warn-soft);color:var(--warn);font-size:13px;font-weight:500;text-align:center;padding:7px 12px}
+header.top{display:flex;align-items:center;gap:10px;padding:16px 0 6px}
+header.top svg{width:30px;height:30px;color:var(--accent);flex:none}
+header.top h1{font-size:19px;margin:0;font-weight:700;letter-spacing:-.01em}
+header.top .cart{margin-left:auto;font-size:13px;font-weight:700;background:var(--accent-soft);color:var(--accent);padding:5px 10px;border-radius:999px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:12px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fields .full{grid-column:1/-1}
+label.f{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px}
+.f-in{width:100%;height:44px;border:1px solid var(--border);border-radius:9px;background:var(--surface2);padding:0 10px}
+.f-in:focus{outline:2px solid var(--accent);outline-offset:1px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-weight:500}
+.chip[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 8px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tab{height:46px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-weight:700;cursor:pointer;position:relative}
+.tab small{display:block;font-size:10.5px;font-weight:500;color:var(--muted);margin-top:-3px}
+.tab[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab[aria-selected=true] small{color:var(--faint)}
+.tab .n{position:absolute;top:-6px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-size:11px;display:grid;place-items:center;padding:0 5px}
+.search{position:relative;margin-bottom:6px}
+.search input{width:100%;height:42px;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:0 12px 0 36px}
+.search svg{position:absolute;left:11px;top:12px;width:18px;height:18px;color:var(--faint)}
+.group h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 2px 6px;font-weight:700;display:flex;justify-content:space-between}
+.group .note{font-size:12.5px;color:var(--warn);background:var(--warn-soft);border-radius:8px;padding:7px 10px;margin:0 0 6px}
+.list{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.row{display:flex;align-items:center;gap:10px;min-height:54px;padding:6px 8px 6px 12px;border-top:1px solid var(--border);cursor:pointer;user-select:none}
+.row:first-child{border-top:0}
+.row .box{width:24px;height:24px;border-radius:7px;border:2px solid var(--faint);flex:none;display:grid;place-items:center}
+.row.on{background:var(--accent-soft)}
+.row.on .box{background:var(--accent);border-color:var(--accent)}
+.row .box svg{width:14px;height:14px;color:var(--accent-ink);opacity:0}
+.row.on .box svg{opacity:1}
+.row .nm{flex:1;font-size:15px}
+.stepper{display:none;align-items:center;gap:2px}
+.row.on .stepper{display:flex}
+.stepper button{width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--surface);font-size:20px;line-height:1;cursor:pointer}
+.stepper output{min-width:30px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.empty{color:var(--muted);text-align:center;padding:24px}
+footer.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--border);padding:10px 16px calc(10px + env(safe-area-inset-bottom));z-index:10}
+footer.bar .in{max-width:640px;margin:0 auto;display:flex;gap:10px;align-items:center}
+footer.bar .sum{flex:1;font-size:14px;color:var(--muted)}
+footer.bar .sum b{color:var(--ink);font-size:16px}
+.btn{height:50px;padding:0 22px;border-radius:12px;border:0;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--border)}
+dialog{border:0;border-radius:16px;padding:0;max-width:560px;width:calc(100% - 24px);background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.dlg{padding:18px}
+.dlg h2{margin:0 0 4px;font-size:19px}
+.dlg .meta{color:var(--muted);font-size:14px;margin-bottom:12px}
+.rev{border:1px solid var(--border);border-radius:10px;max-height:46vh;overflow:auto}
+.rev div{display:flex;justify-content:space-between;gap:12px;padding:9px 12px;border-top:1px solid var(--border);font-size:14px}
+.rev div:first-child{border-top:0}
+.rev b{font-variant-numeric:tabular-nums}
+.warnbox{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-top:12px}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+pre.payload{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;font-size:12px;overflow:auto;max-height:40vh;white-space:pre-wrap}
+.done{text-align:center;padding:26px 18px}
+.done svg{width:52px;height:52px;color:var(--accent)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div class="trial" role="status">Trial version — nothing is saved to Monday. Use it to try the flow.</div>
+<div class="wrap">
+  <header class="top">
+    <svg viewBox="0 0 32 32" fill="none" aria-label="MAPS cart checklist logo" role="img"><rect x="3" y="5" width="26" height="22" rx="5" stroke="currentColor" stroke-width="2.4"/><path d="M9 16.5l4 4 9-9" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h1>Cart Usage</h1>
+    <span class="cart" id="cartBadge">—</span>
+  </header>
+
+  <section class="card" aria-label="Case details">
+    <div class="fields">
+      <div><label class="f" for="date">Date of Use</label><input class="f-in" type="date" id="date"></div>
+      <div><label class="f" for="cart">Cart</label><select class="f-in" id="cart"></select></div>
+      <div class="full"><label class="f" for="loc">Location</label><select class="f-in" id="loc"><option value="">Choose location…</option></select></div>
+      <div class="full"><span class="f" style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px">Provider</span><div class="chips" id="prov" role="group" aria-label="Provider"></div></div>
+    </div>
+  </section>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="Search all items (optional)" aria-label="Search items"></div>
+  <main id="list"></main>
+</div>
+
+<footer class="bar"><div class="in">
+  <div class="sum" id="sum"><b>0</b> items checked</div>
+  <button class="btn ghost" id="clear" type="button">Clear</button>
+  <button class="btn" id="review" type="button" disabled>Review</button>
+</div></footer>
+
+<dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
+
+<script>
+const C = window.CATALOG;
+const TABS = [["SUP","Supplies"],["MED","Meds"],["EMG","Emergency"],["KIT","Kits"]];
+const GROUP_ORDER = ["Airway Drawer","Med Drawer","Monitors Drawer","PAX Bag","Harloff Cart","Side of Cart","Other","Propofol","Single-dose vials","Multidose vials","Emergency drawer","Central supply kits"];
+const NOTES = {"Multidose vials":"Multidose: check it only when the vial is finished or thrown away, not when opened.","Propofol":"Pick the vial size you actually used."};
+const state = {tab:"SUP", q:"", sel:new Map(), provider:""};
+const $ = s=>document.querySelector(s);
+const check = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+// header fields
+const params = new URLSearchParams(location.search);
+const cartSel = $("#cart");
+C.carts.forEach(c=>cartSel.add(new Option(c,c)));
+cartSel.value = C.carts.includes(params.get("cart")) ? params.get("cart") : C.carts[0];
+const setBadge=()=>$("#cartBadge").textContent=cartSel.value; setBadge(); cartSel.onchange=setBadge;
+C.locations.slice().sort().forEach(l=>$("#loc").add(new Option(l,l)));
+const d=new Date(); $("#date").value = new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+C.providers.forEach(p=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=p;b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{state.provider=p;document.querySelectorAll("#prov .chip").forEach(x=>x.setAttribute("aria-pressed",x===b));};$("#prov").append(b);});
+
+function renderTabs(){
+  $("#tabs").innerHTML="";
+  TABS.forEach(([k,lab])=>{
+    const n=[...state.sel.keys()].filter(l=>C.items.find(i=>i.label===l).cat===k).length;
+    const b=document.createElement("button");b.className="tab";b.role="tab";b.setAttribute("aria-selected",state.tab===k&&!state.q);
+    b.innerHTML=`${k}<small>${lab}</small>`+(n?`<span class="n">${n}</span>`:"");
+    b.onclick=()=>{state.tab=k;state.q="";$("#q").value="";render();window.scrollTo({top:$("#tabs").offsetTop-4,behavior:"smooth"});};
+    $("#tabs").append(b);
+  });
+}
+function rowEl(it){
+  const on=state.sel.has(it.label), qty=state.sel.get(it.label)||1;
+  const r=document.createElement("div");r.className="row"+(on?" on":"");r.setAttribute("role","checkbox");r.setAttribute("aria-checked",on);r.tabIndex=0;
+  r.innerHTML=`<span class="box">${check}</span><span class="nm">${it.name}</span>
+   <span class="stepper"><button type="button" aria-label="Less">−</button><output aria-live="polite">${qty}</output><button type="button" aria-label="More">+</button></span>`;
+  const toggle=()=>{state.sel.has(it.label)?state.sel.delete(it.label):state.sel.set(it.label,1);render(true);};
+  r.onclick=e=>{if(e.target.closest(".stepper"))return;toggle();};
+  r.onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();}};
+  const [minus,,plus]=r.querySelector(".stepper").children;
+  minus.onclick=()=>{const v=state.sel.get(it.label)-1; v<1?state.sel.delete(it.label):state.sel.set(it.label,v); render(true);};
+  plus.onclick=()=>{state.sel.set(it.label,state.sel.get(it.label)+1); render(true);};
+  return r;
+}
+function render(keepScroll){
+  const y=window.scrollY;
+  renderTabs();
+  const list=$("#list");list.innerHTML="";
+  let items = state.q ? C.items.filter(i=>i.label.toLowerCase().includes(state.q)) : C.items.filter(i=>i.cat===state.tab);
+  if(!items.length){list.innerHTML='<p class="empty">No items match.</p>';}
+  const groups={};items.forEach(i=>(groups[i.group]??=[]).push(i));
+  Object.keys(groups).sort((a,b)=>GROUP_ORDER.indexOf(a)-GROUP_ORDER.indexOf(b)).forEach(g=>{
+    const sec=document.createElement("section");sec.className="group";
+    const cnt=groups[g].filter(i=>state.sel.has(i.label)).length;
+    sec.innerHTML=`<h3><span>${g}</span><span>${cnt?cnt+" checked":groups[g].length}</span></h3>`+(NOTES[g]?`<p class="note">${NOTES[g]}</p>`:"");
+    const l=document.createElement("div");l.className="list";
+    groups[g].sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true})).forEach(i=>l.append(rowEl(i)));
+    sec.append(l);list.append(sec);
+  });
+  const n=state.sel.size, u=[...state.sel.values()].reduce((a,b)=>a+b,0);
+  $("#sum").innerHTML=`<b>${n}</b> item${n===1?"":"s"} checked${n?` · ${u} units`:""}`;
+  $("#review").disabled=!n;
+  if(keepScroll) window.scrollTo(0,y);
+}
+$("#q").oninput=e=>{state.q=e.target.value.trim().toLowerCase();render();};
+$("#clear").onclick=()=>{if(state.sel.size&&confirm("Clear all checked items?")){state.sel.clear();render();}};
+
+function fmt(iso){const [y,m,dd]=iso.split("-");return `${m}/${dd}/${y.slice(2)}`;}
+$("#review").onclick=()=>{
+  const miss=[]; if(!$("#date").value)miss.push("Date of Use"); if(!$("#loc").value)miss.push("Location"); if(!state.provider)miss.push("Provider");
+  const lines=[...state.sel.entries()].sort();
+  const name=[state.provider,$("#date").value&&fmt($("#date").value),cartSel.value,$("#loc").value].filter(Boolean).join(" — ");
+  $("#dlgBody").innerHTML=`<h2>Review ${lines.length} item${lines.length===1?"":"s"}</h2>
+   <div class="meta">${name||"—"}</div>
+   <div class="rev">${lines.map(([l,q])=>`<div><span>${l}</span><b>× ${q}</b></div>`).join("")}</div>
+   ${miss.length?`<div class="warnbox">Still needed: <b>${miss.join(", ")}</b></div>`:""}
+   <div class="acts"><button class="btn ghost" id="back" type="button">Back</button><button class="btn" id="go" type="button" ${miss.length?"disabled":""}>Submit</button></div>`;
+  $("#dlg").showModal();
+  $("#back").onclick=()=>$("#dlg").close();
+  $("#go").onclick=()=>{
+    const payload={board:"MAPS Usage Log (18431752280)",parent:{name,"Date of Use":$("#date").value,Cart:cartSel.value,Location:$("#loc").value,Provider:state.provider},
+      subitems:lines.map(([l,q])=>({"Item Used":l,Quantity:q}))};
+    $("#dlgBody").innerHTML=`<div class="done"><svg viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="3"><circle cx="26" cy="26" r="23"/><path d="M15 27l7 7 15-15" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h2>Trial submission ready</h2><div class="meta">In the live version this creates <b>1 usage entry</b> with <b>${lines.length} line items</b> on the MAPS Usage Log — the same shape the current form makes. Nothing was saved.</div></div>
+      <pre class="payload">${JSON.stringify(payload,null,1).replace(/</g,"&lt;")}</pre>
+      <div class="acts"><button class="btn ghost" id="keep" type="button">Back to list</button><button class="btn" id="new" type="button">Start new</button></div>`;
+    $("#keep").onclick=()=>$("#dlg").close();
+    $("#new").onclick=()=>{state.sel.clear();$("#dlg").close();render();window.scrollTo(0,0);};
+  };
+};
+render();
+</script>
+</body>
+</html>
