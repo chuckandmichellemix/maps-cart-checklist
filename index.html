@@ -35,7 +35,7 @@ label.f{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-b
 .chip{height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-weight:500}
 .chip[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 nav.tabs{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 8px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.tab{height:46px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-weight:700;cursor:pointer;position:relative}
+.tab{height:44px;padding:0 2px;line-height:1.15;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-weight:700;cursor:pointer;position:relative}
 .tab small{display:block;font-size:10.5px;font-weight:500;color:var(--muted);margin-top:-3px}
 .tab[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .tab[aria-selected=true] small{color:var(--faint)}
@@ -116,10 +116,15 @@ pre.payload{background:var(--surface2);border:1px solid var(--border);border-rad
 
 <script>
 const C = window.CATALOG;
-const TABS = [["SUP","Supplies"],["MED","Meds"],["EMG","Emergency"],["KIT","Kits"]];
+// Tab -> which items it shows. Section tabs pull their drawer/bag out of SUP, so every item lives in exactly one tab.
+const SECTION_TABS = {AIRWAY:["Airway Drawer","Airway Extras"], PEDS:["PEDS Bag"], PAX:["PAX Bag"], HARLOFF:["Harloff Cart"]};
+const IN_SECTION = new Set(Object.values(SECTION_TABS).flat());
+const TABS = [["AIRWAY","Drawer + Extras"],["PEDS","Bag"],["PAX","Bag"],["HARLOFF","Cart"],
+              ["SUP","Other Supplies"],["MED","Meds"],["EMG","Emergency"],["KIT","Kits"]];
+const tabOf = it => { for (const [k,gs] of Object.entries(SECTION_TABS)) if (it.cat==="SUP" && gs.includes(it.group)) return k; return it.cat; };
 const GROUP_ORDER = ["Airway Drawer","Airway Extras","PEDS Bag","Med Drawer","Monitors Drawer","PAX Bag","Harloff Cart","Side of Cart","Other","Propofol","Single-dose vials","Multidose vials","Emergency drawer","Central supply kits"];
 const NOTES = {"PEDS Bag":"Pediatric NETT days bag, not stocked in a drawer.","Airway Extras":"Extras kept in the kits, not stocked in a drawer.","Multidose vials":"Multidose: check it only when the vial is finished or thrown away, not when opened.","Propofol":"Pick the vial size you actually used."};
-const state = {tab:"SUP", q:"", sel:new Map(), provider:""};
+const state = {tab:"AIRWAY", q:"", sel:new Map(), provider:""};
 const $ = s=>document.querySelector(s);
 const check = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
@@ -137,7 +142,7 @@ C.providers.forEach(p=>{const b=document.createElement("button");b.type="button"
 function renderTabs(){
   $("#tabs").innerHTML="";
   TABS.forEach(([k,lab])=>{
-    const n=[...state.sel.keys()].filter(l=>C.items.find(i=>i.label===l).cat===k).length;
+    const n=[...state.sel.keys()].filter(l=>tabOf(C.items.find(i=>i.label===l))===k).length;
     const b=document.createElement("button");b.className="tab";b.role="tab";b.setAttribute("aria-selected",state.tab===k&&!state.q);
     b.innerHTML=`${k}<small>${lab}</small>`+(n?`<span class="n">${n}</span>`:"");
     b.onclick=()=>{state.tab=k;state.q="";$("#q").value="";render();window.scrollTo({top:$("#tabs").offsetTop-4,behavior:"smooth"});};
@@ -161,7 +166,7 @@ function render(keepScroll){
   const y=window.scrollY;
   renderTabs();
   const list=$("#list");list.innerHTML="";
-  let items = state.q ? C.items.filter(i=>i.label.toLowerCase().includes(state.q)) : C.items.filter(i=>i.cat===state.tab);
+  let items = state.q ? C.items.filter(i=>i.label.toLowerCase().includes(state.q)) : C.items.filter(i=>tabOf(i)===state.tab);
   if(!items.length){list.innerHTML='<p class="empty">No items match.</p>';}
   const groups={};items.forEach(i=>(groups[i.group]??=[]).push(i));
   Object.keys(groups).sort((a,b)=>GROUP_ORDER.indexOf(a)-GROUP_ORDER.indexOf(b)).forEach(g=>{
