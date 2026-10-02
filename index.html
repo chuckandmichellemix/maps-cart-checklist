@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <title>MAPS Cart Usage — MPS-KS-TEST (Trial)</title>
 <link rel="preconnect" href="https://api.fontshare.com">
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
@@ -22,7 +24,12 @@ button,input,select{font:inherit;color:inherit}
 .wrap{max-width:640px;margin:0 auto;padding:0 16px 140px}
 .trial{background:var(--warn-soft);color:var(--warn);font-size:13px;font-weight:500;text-align:center;padding:7px 12px}
 header.top{display:flex;align-items:center;gap:10px;padding:16px 0 6px}
-header.top svg{width:30px;height:30px;color:var(--accent);flex:none}
+header.top .logo{height:40px;width:auto;flex:none}
+header.top h1{border-left:1px solid var(--border);padding-left:10px;white-space:nowrap;font-size:17px!important}
+header.top .cart{white-space:nowrap}
+header.top .logo{height:44px}
+@media (max-width:370px){header.top .logo{height:30px}header.top h1{font-size:14px!important;padding-left:7px}header.top{gap:6px}header.top .cart{font-size:11.5px;padding:4px 8px}}
+@media (prefers-color-scheme:dark){header.top .logo{filter:invert(1)}}
 header.top h1{font-size:19px;margin:0;font-weight:700;letter-spacing:-.01em}
 header.top .cart{margin-left:auto;font-size:13px;font-weight:700;background:var(--accent-soft);color:var(--accent);padding:5px 10px;border-radius:999px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:12px}
@@ -87,7 +94,7 @@ pre.payload{background:var(--surface2);border:1px solid var(--border);border-rad
 <div class="trial" role="status">Trial version — nothing is saved to Monday. Use it to try the flow.</div>
 <div class="wrap">
   <header class="top">
-    <svg viewBox="0 0 32 32" fill="none" aria-label="MAPS cart checklist logo" role="img"><rect x="3" y="5" width="26" height="22" rx="5" stroke="currentColor" stroke-width="2.4"/><path d="M9 16.5l4 4 9-9" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <img class="logo" src="assets/maps-logo-full.png" alt="MAPS Mobile Anesthesia" width="694" height="254">
     <h1>Cart Usage</h1>
     <span class="cart" id="cartBadge">—</span>
   </header>
