@@ -117,8 +117,8 @@ pre.payload{background:var(--surface2);border:1px solid var(--border);border-rad
 <script>
 const C = window.CATALOG;
 const TABS = [["SUP","Supplies"],["MED","Meds"],["EMG","Emergency"],["KIT","Kits"]];
-const GROUP_ORDER = ["Airway Drawer","Airway Extras","Med Drawer","Monitors Drawer","PAX Bag","Harloff Cart","Side of Cart","Other","Propofol","Single-dose vials","Multidose vials","Emergency drawer","Central supply kits"];
-const NOTES = {"Airway Extras":"Extras kept in the kits, not stocked in a drawer.","Multidose vials":"Multidose: check it only when the vial is finished or thrown away, not when opened.","Propofol":"Pick the vial size you actually used."};
+const GROUP_ORDER = ["Airway Drawer","Airway Extras","PEDS Bag","Med Drawer","Monitors Drawer","PAX Bag","Harloff Cart","Side of Cart","Other","Propofol","Single-dose vials","Multidose vials","Emergency drawer","Central supply kits"];
+const NOTES = {"PEDS Bag":"Pediatric NETT days bag, not stocked in a drawer.","Airway Extras":"Extras kept in the kits, not stocked in a drawer.","Multidose vials":"Multidose: check it only when the vial is finished or thrown away, not when opened.","Propofol":"Pick the vial size you actually used."};
 const state = {tab:"SUP", q:"", sel:new Map(), provider:""};
 const $ = s=>document.querySelector(s);
 const check = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
